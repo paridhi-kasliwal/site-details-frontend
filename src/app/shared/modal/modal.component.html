@@ -1,0 +1,85 @@
+<div #myModal id="myModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" (click)="close()">&times;</span>
+            <h3>Add Domain Details</h3>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="domainForm" name="domainForm" (submit)="domainForm.valid && saveDomainDetails()">
+                <div class='row'>
+                    <div class='column'>
+                        <div>
+                            <label>Domain Name<span class="red">*</span></label>
+                            <input type="text" formControlName="domain" />
+                        </div>
+                    </div>
+                    <div class='column'>
+                        <div>
+                            <label>Storage<span class="red">*</span></label>
+                            <input type="text" formControlName="storage" />
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='column'>
+                        <div>
+                            <label>Used Storage<span class="red">*</span></label>
+                            <input type="text" formControlName="usedStorage" />
+                        </div>
+                    </div>
+                    <div class='column'>
+                        <div>
+                            <label>Domain Tag<span class="red">*</span></label>
+                            <input type="text" formControlName="domainTag" />
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='column'>
+                        <div>
+                            <label>Monthly Visitor Capacity<span class="red">*</span></label>
+                            <input type="text" formControlName="monthlyVisitorCapacity" />
+                        </div>
+                    </div>
+                    <div class='column'>
+                        <div>
+                            <label>Monthly Visitor<span class="red">*</span></label>
+                            <input type="text" formControlName="montlyVisitor" />
+                        </div>
+                    </div>
+                </div>
+                <div  formArrayName="subdomain" *ngFor="let subdomain of domainForm.controls.subdomain?.controls; let i = index">
+                    <div [formGroupName]="i">
+                        <div class="mb-10">
+                            <label>Sub Domain<span class="red">*</span></label>
+                            <button type="button" (click)="removesubdomain(i)" *ngIf="i !== 0" class="btn btn-Cross btn-Red">x</button>
+                        </div>
+
+                        <div class='row'>
+                            <div class="column">
+                                <input formControlName="name" type="text" class="add-more" placeholder="Sub Domain Name">
+                            </div>
+                            <div class="column f-direction">
+                                <input formControlName="usedStorage" type="text" class="add-more" placeholder="Used Storage">
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class="column">
+                                <input formControlName="domainTag" type="text" class="add-more" placeholder="Domain Tag">
+                            </div>
+                            <div class="column">
+                                <input formControlName="montlyVisitor" type="text" class="add-more" placeholder="Monthly Visitor">
+                            </div>
+                        </div>
+                    </div>
+                </div>     
+                <button type="button" (click)="addsubdomain()" class="btn btn-plus btn-Blue" [disabled]="subdomain.invalid">Add More</button>
+
+                <div class="modal-footer">
+                    <button class="btn btn-White" (click)="close()">Close</button>
+                    <button class="btn btn-Blue" type="submit">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

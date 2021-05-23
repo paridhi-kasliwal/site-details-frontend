@@ -1,0 +1,384 @@
+<app-modal #modal (refresh)="getDomains()"></app-modal>
+
+<div class="container">
+    <div class="header">
+        <div class="box-headingSiteDetail">
+            <h4>Site Details</h4>
+            <button class="btn-plusBlue" type="button" (click)="openModal()">+ Add New Site</button>
+        </div>
+    </div>
+    <div class="box-inputSearchShow box-dFlex">
+        <div class="box-showEntery">
+            Show <input class="input-show mx-5px" type="number" min="1" name="" [(ngModel)]="recordsPerPage" (ngModelChange)="changeRecordsPerPage($event)"/> Enteries
+        </div>
+        <div class="box-search">
+            <input class="input-search" type="text" name="" placeholder="Search records" [(ngModel)]="search" (ngModelChange)="searchDomain($event)"/>
+        </div>
+    </div>
+    <section class="box-siteDetailContent">
+        <div class="box-progHead box-prog box-dFlex w-100">
+            <div class="w-23 box-progInn txt-ellipsis">Domain & Plan Name</div>
+            <div class="w-23 box-progInn txt-ellipsis">Storage</div>
+            <div class="w-23 box-progInn txt-ellipsis">Monthly Visitor</div>
+            <div class="w-15 box-progInn txt-ellipsis">Domains</div>
+            <div class="w-15 box-progInn txt-ellipsis">Status</div>
+        </div> 
+    
+        <div class="box-progCont w-100" *ngIf="domainList.length === 0">
+            <div class="box-progContInn box-prog box-dFlex no-record">
+                No Records Found
+            </div>
+        </div>
+        <div class="box-progCont w-100" *ngFor = "let domain of domainList">
+            <div class="box-progContInn box-prog box-dFlex w-100">
+                <div class="w-23 box-progInn txt-ellipsis">
+                    <span>{{domain?.domain ? domain?.domain : '-'}}</span>
+                    <em>Professional Plan</em>
+                </div>
+                <div class="w-23 box-progInn txt-ellipsis">
+                    <div class="progressbar">
+                        <div [ngStyle]="{'width': domain?.storagePercent}" class="progressbar-inner"></div>
+                    </div>
+                    <p>{{domain?.usedStorage ? domain?.usedStorage : '0'}} GB of {{domain?.storage ? domain?.storage : '0'}} GB</p>
+                </div>
+                <div class="w-23 box-progInn txt-ellipsis">
+                    <div class="progressbar">
+                        <div [ngStyle]="{'width': domain?.visitorPercent}" class="progressbar-inner"></div>
+                    </div>
+                    <p>{{domain?.montlyVisitor ? domain?.montlyVisitor : '0'}} of {{domain?.monthlyVisitorCapacity ? domain?.monthlyVisitorCapacity : '0'}}</p>
+                </div>
+                <div class="w-15 box-progInn txt-ellipsis">
+                    <app-radial-progress [usedDomains]="domain.usedDomains" [availableDomains]="domain.availableDomains"></app-radial-progress>
+                </div>
+                <div class="w-15 box-progInn txt-ellipsis">
+                    <span class="txt-bg" [ngClass]="{'txt-bgGreen': domain?.status === 'Active', 'txt-bgOrange': domain?.status === 'Inactive'}">{{domain?.status ? domain?.status : '-'}}</span>
+                </div>
+            </div>
+            <div class="box-progContPara box-prog w-100" *ngIf="domain?.subdomain.length > 0">
+                <div class="box-progContParaInn box-prog box-dFlex w-100" *ngFor="let subdomain of domain.subdomain">
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-ellipsis">{{subdomain?.name ? subdomain?.name : '-'}}</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen" [ngClass]="{'txt-circleBlue': subdomain?.domainTag === 'Primary', 'txt-circlePink': subdomain?.domainTag === 'Staging', 'txt-circleOrange': subdomain?.domainTag === 'Add-On'}">{{subdomain?.usedStorage ? subdomain?.usedStorage : '0'}}</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen" [ngClass]="{'txt-circleBlue': subdomain?.domainTag === 'Primary', 'txt-circlePink': subdomain?.domainTag === 'Staging', 'txt-circleOrange': subdomain?.domainTag === 'Add-On'}">{{subdomain?.montlyVisitor ? subdomain?.montlyVisitor : '0'}}</span>
+                    </div>			
+                    <div class="w-15 box-progInn txt-ellipsis">
+                        <span class="txt-bg" [ngClass]="{'txt-bgBlue': subdomain?.domainTag === 'Primary', 'txt-bgPink': subdomain?.domainTag === 'Staging', 'txt-bgOrange': subdomain?.domainTag === 'Add-On'}">{{subdomain?.domainTag ? subdomain?.domainTag : '-'}}</span>
+                    </div>
+                    <div class="w-15 box-progInn">
+                        <span class="txt-bg" [ngClass]="{'txt-bgGreen': subdomain?.status === 'Active', 'txt-bgOrange': subdomain?.status === 'Inactive'}">{{subdomain?.status ? subdomain?.status : '-'}}</span>
+                    </div>
+                </div>
+                <!-- <div class="box-progContParaInn box-prog box-dFlex w-100 sub-txt">
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-ellipsis pl-30px">paperpillar.bigscoots.staging.com</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circlePink">1.5 M</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        -
+                    </div>			
+                    <div class="w-15 box-progInn txt-ellipsis">
+                        <span class="txt-bg txt-bgPink">Staging</span>
+                    </div>
+                    <div class="w-15 box-progInn">
+                        <span class="txt-bg txt-bgGreen">Active</span>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+        
+        <!-- <div class="box-progCont w-100">
+            <div class="box-progContInn box-prog box-dFlex w-100">
+                <div class="w-23 box-progInn txt-ellipsis">
+                    <span>paperpillar.com</span>
+                    <em>Professional Plan</em>
+                </div>
+                <div class="w-23 box-progInn txt-ellipsis">
+                    <div class="progressbar">
+                        <div style="width:20%;" class="progressbar-inner"></div>
+                    </div>
+                    <p>36.30 GB of 1.2 GB</p>
+                </div>
+                <div class="w-23 box-progInn txt-ellipsis">
+                    <div class="progressbar">
+                        <div style="width:90%;" class="progressbar-inner"></div>
+                    </div>
+                    <p>36.30 GB of 1.2 GB</p>
+                </div>
+                <div class="w-15 box-progInn txt-ellipsis">
+    
+                </div>
+                <div class="w-15 box-progInn txt-ellipsis"><span class="txt-bg txt-bgGreen">Active</span></div>
+            </div>
+            <div class="box-progContPara box-prog w-100" style="display:none;">
+                <div class="box-progContParaInn box-prog box-dFlex w-100">
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-ellipsis">paperpillar.com</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen">1.5 M</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen">1.5 M</span>
+                    </div>			
+                    <div class="w-15 box-progInn txt-ellipsis">
+                        <span class="txt-bg txt-bgBlue">Primary</span>
+                    </div>
+                    <div class="w-15 box-progInn">
+                        <span class="txt-bg txt-bgGreen">Active</span>
+                    </div>
+                </div>
+                <div class="box-progContParaInn box-prog box-dFlex w-100 sub-txt">
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-ellipsis pl-30px">paperpillar.bigscoots.staging.com</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circlePink">1.5 M</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        -
+                    </div>			
+                    <div class="w-15 box-progInn txt-ellipsis">
+                        <span class="txt-bg txt-bgPink">Staging</span>
+                    </div>
+                    <div class="w-15 box-progInn">
+                        <span class="txt-bg txt-bgGreen">Active</span>
+                    </div>
+                </div>
+                <div class="box-progContParaInn box-prog box-dFlex w-100">
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-ellipsis">supply.paperpillar.com</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circleBlue">1.5 M</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circleBlue">1.5 M</span>
+                    </div>			
+                    <div class="w-15 box-progInn txt-ellipsis">
+                        <span class="txt-bg txt-bgOrange">Add-on</span>
+                    </div>
+                    <div class="w-15 box-progInn">
+                        <span class="txt-bg txt-bgGreen">Active</span>
+                    </div>
+                </div>
+                <div class="box-progContParaInn box-prog box-dFlex w-100">
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-ellipsis">supply.paperpillar.com</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circleOrange">1.5 M</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circleOrange">1.5 M</span>
+                    </div>			
+                    <div class="w-15 box-progInn txt-ellipsis">
+                        <span class="txt-bg txt-bgOrange">Add-on</span>
+                    </div>
+                    <div class="w-15 box-progInn">
+                        <span class="txt-bg txt-bgGreen">Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="box-progCont w-100">
+            <div class="box-progContInn box-prog box-dFlex w-100">
+                <div class="w-23 box-progInn txt-ellipsis">
+                    <span>paperpillar.com</span>
+                    <em>Professional Plan</em>
+                </div>
+                <div class="w-23 box-progInn txt-ellipsis">
+                    <div class="progressbar">
+                        <div style="width:20%;" class="progressbar-inner"></div>
+                    </div>
+                    <p>36.30 GB of 1.2 GB</p>
+                </div>
+                <div class="w-23 box-progInn txt-ellipsis">
+                    <div class="progressbar">
+                        <div style="width:90%;" class="progressbar-inner"></div>
+                    </div>
+                    <p>36.30 GB of 1.2 GB</p>
+                </div>
+                <div class="w-15 box-progInn txt-ellipsis">
+    
+                </div>
+                <div class="w-15 box-progInn txt-ellipsis">
+                    <span class="txt-bg txt-bgGreen">Active</span>
+                </div>
+            </div>
+            <div class="box-progContPara box-prog w-100" style="display:none;">
+                <div class="box-progContParaInn box-prog box-dFlex w-100">
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-ellipsis">paperpillar.com</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen">1.5 M</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen">1.5 M</span>
+                    </div>			
+                    <div class="w-15 box-progInn txt-ellipsis">
+                        <span class="txt-bg txt-bgBlue">Primary</span>
+                    </div>
+                    <div class="w-15 box-progInn">
+                        <span class="txt-bg txt-bgGreen">Active</span>
+                    </div>
+                </div>
+                <div class="box-progContParaInn box-prog box-dFlex w-100 sub-txt">
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-ellipsis pl-30px">paperpillar.bigscoots.staging.com</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circlePink">1.5 M</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        -
+                    </div>			
+                    <div class="w-15 box-progInn txt-ellipsis">
+                        <span class="txt-bg txt-bgPink">Staging</span>
+                    </div>
+                    <div class="w-15 box-progInn">
+                        <span class="txt-bg txt-bgGreen">Active</span>
+                    </div>
+                </div>
+                <div class="box-progContParaInn box-prog box-dFlex w-100">
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-ellipsis">supply.paperpillar.com</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circleBlue">1.5 M</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circleBlue">1.5 M</span>
+                    </div>			
+                    <div class="w-15 box-progInn txt-ellipsis">
+                        <span class="txt-bg txt-bgOrange">Add-on</span>
+                    </div>
+                    <div class="w-15 box-progInn">
+                        <span class="txt-bg txt-bgGreen">Active</span>
+                    </div>
+                </div>
+                <div class="box-progContParaInn box-prog box-dFlex w-100">
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-ellipsis">supply.paperpillar.com</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circleOrange">1.5 M</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circleOrange">1.5 M</span>
+                    </div>			
+                    <div class="w-15 box-progInn txt-ellipsis">
+                        <span class="txt-bg txt-bgOrange">Add-on</span>
+                    </div>
+                    <div class="w-15 box-progInn">
+                        <span class="txt-bg txt-bgGreen">Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-progCont w-100">
+            <div class="box-progContInn box-prog box-dFlex w-100">
+                <div class="w-23 box-progInn txt-ellipsis">
+                    <span>paperpillar.com</span>
+                    <em>Professional Plan</em>
+                </div>
+                <div class="w-23 box-progInn txt-ellipsis">
+                    <div class="progressbar">
+                        <div style="width:20%;" class="progressbar-inner"></div>
+                    </div>
+                    <p>36.30 GB of 1.2 GB</p>
+                </div>
+                <div class="w-23 box-progInn txt-ellipsis">
+                    <div class="progressbar">
+                        <div style="width:90%;" class="progressbar-inner"></div>
+                    </div>
+                    <p>36.30 GB of 1.2 GB</p>
+                </div>
+                <div class="w-15 box-progInn txt-ellipsis">
+    
+                </div>
+                <div class="w-15 box-progInn txt-ellipsis">
+                    <span class="txt-bg txt-bgGreen">Active</span>
+                </div>
+            </div>
+            <div class="box-progContPara box-prog w-100" style="display:none;">
+                <div class="box-progContParaInn box-prog box-dFlex w-100">
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-ellipsis">paperpillar.com</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen">1.5 M</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen">1.5 M</span>
+                    </div>			
+                    <div class="w-15 box-progInn txt-ellipsis">
+                        <span class="txt-bg txt-bgBlue">Primary</span>
+                    </div>
+                    <div class="w-15 box-progInn">
+                        <span class="txt-bg txt-bgGreen">Active</span>
+                    </div>
+                </div>
+                <div class="box-progContParaInn box-prog box-dFlex w-100 sub-txt">
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-ellipsis pl-30px">paperpillar.bigscoots.staging.com</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circlePink">1.5 M</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        -
+                    </div>			
+                    <div class="w-15 box-progInn txt-ellipsis">
+                        <span class="txt-bg txt-bgPink">Staging</span>
+                    </div>
+                    <div class="w-15 box-progInn">
+                        <span class="txt-bg txt-bgGreen">Active</span>
+                    </div>
+                </div>
+                <div class="box-progContParaInn box-prog box-dFlex w-100">
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-ellipsis">supply.paperpillar.com</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circleBlue">1.5 M</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circleBlue">1.5 M</span>
+                    </div>			
+                    <div class="w-15 box-progInn txt-ellipsis">
+                        <span class="txt-bg txt-bgOrange">Add-on</span>
+                    </div>
+                    <div class="w-15 box-progInn">
+                        <span class="txt-bg txt-bgGreen">Active</span>
+                    </div>
+                </div>
+                <div class="box-progContParaInn box-prog box-dFlex w-100">
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-ellipsis">supply.paperpillar.com</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circleOrange">1.5 M</span>
+                    </div>
+                    <div class="w-23 box-progInn txt-ellipsis mt-2px">
+                        <span class="txt-circleGreen txt-circleOrange">1.5 M</span>
+                    </div>			
+                    <div class="w-15 box-progInn txt-ellipsis">
+                        <span class="txt-bg txt-bgOrange">Add-on</span>
+                    </div>
+                    <div class="w-15 box-progInn">
+                        <span class="txt-bg txt-bgGreen">Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>     -->
+    </section>
+</div> 

@@ -1,0 +1,21 @@
+<div class="container">
+    <div class="user-details">
+        <div>
+            <img src="../../../assets/dummy-user.jpg" class="dummy-user"/>
+        </div>
+        <div>
+            <span>John Doe</span><i class="arrow down"></i>
+        </div>
+        <div>
+            <span class="opacity-half">emailaddress@email.com</span>
+        </div>
+    </div>
+    <div class="nav-container">
+        <div class="nav" *ngFor="let menu of menuItems">
+            <a class="nav-link" [routerLink]="[menu.url]" routerLinkActive="active">
+                <i class={{menu.icon}} aria-hidden="true"></i>
+                <span>{{menu.name}}</span>
+            </a>
+        </div>
+    </div>
+</div>

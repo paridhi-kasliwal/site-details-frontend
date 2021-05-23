@@ -1,0 +1,22 @@
+/* You can add global styles to this file, and also import other style files */
+*, *:before,
+*:after{
+	margin:0px;
+	padding:0px;
+	outline:none;
+	box-sizing: border-box;
+}
+body{
+	color:#000;
+	font-size:14px;
+	background-color:#e7eef7;
+	font-family: 'Open Sans', sans-serif;
+}
+
+button {
+	cursor: pointer;
+}
+
+.overflow-hide {
+	overflow-y: hidden;
+}
